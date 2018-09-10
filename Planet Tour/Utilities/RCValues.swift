@@ -37,6 +37,9 @@ class RCValues {
   
   static let sharedInstance = RCValues()
   
+  var loadingDoneCallback: (() -> Void)?
+  var fetchComplete = false
+  
   private init() {
     loadDefaultValues()
     fetchCloudValues()
@@ -50,26 +53,26 @@ class RCValues {
   }
   
   func fetchCloudValues() {
-    // 1
     // WARNING: Don't actually do this in production!
     let fetchDuration: TimeInterval = 0
     activateDebugMode()
-    RemoteConfig.remoteConfig().fetch(withExpirationDuration: fetchDuration) { status, error in
+    
+    RemoteConfig.remoteConfig().fetch(withExpirationDuration: fetchDuration) { [weak self] status, error in
       
       if let error = error {
-        print("Uh-oh. Got an error fetching remote values \(error)")
+        print ("Uh-oh. Got an error fetching remote values \(error)")
         return
       }
       
-      // 2
       RemoteConfig.remoteConfig().activateFetched()
-      print("Retrieved values from the cloud!")
-      
+      print ("Retrieved values from the cloud!")
       let appPrimaryColorString = RemoteConfig.remoteConfig()
         .configValue(forKey: "appPrimaryColor")
         .stringValue ?? "undefined"
       print("Our app's primary color is \(appPrimaryColorString)")
-
+      
+      self?.fetchComplete = true
+      self?.loadingDoneCallback?()
     }
   }
   
