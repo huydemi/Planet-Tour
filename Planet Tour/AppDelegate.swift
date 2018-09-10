@@ -39,6 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     FirebaseApp.configure()
     
+    let _ = RCValues.sharedInstance
+    
     return true
   }
 }

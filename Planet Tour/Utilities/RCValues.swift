@@ -60,6 +60,12 @@ class RCValues {
       // 2
       RemoteConfig.remoteConfig().activateFetched()
       print("Retrieved values from the cloud!")
+      
+      let appPrimaryColorString = RemoteConfig.remoteConfig()
+        .configValue(forKey: "appPrimaryColor")
+        .stringValue ?? "undefined"
+      print("Our app's primary color is \(appPrimaryColorString)")
+
     }
   }
   
