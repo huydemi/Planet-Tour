@@ -29,6 +29,10 @@
 import Foundation
 import Firebase
 
+enum ValueKey: String {
+  case appPrimaryColor
+}
+
 class RCValues {
   
   static let sharedInstance = RCValues()
@@ -40,7 +44,7 @@ class RCValues {
   
   func loadDefaultValues() {
     let appDefaults: [String: Any?] = [
-      "appPrimaryColor" : "#FBB03B"
+      ValueKey.appPrimaryColor.rawValue : "#FBB03B"
     ]
     RemoteConfig.remoteConfig().setDefaults(appDefaults as? [String: NSObject])
   }
@@ -72,6 +76,12 @@ class RCValues {
   func activateDebugMode() {
     let debugSettings = RemoteConfigSettings(developerModeEnabled: true)
     RemoteConfig.remoteConfig().configSettings = debugSettings
+  }
+  
+  func color(forKey key: ValueKey) -> UIColor {
+    let colorAsHexString = RemoteConfig.remoteConfig()[key.rawValue].stringValue ?? "#FFFFFF"
+    let convertedColor = UIColor(colorAsHexString)
+    return convertedColor
   }
   
 }
